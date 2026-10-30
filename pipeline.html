@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courtside · Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">Courtside<small>NBA &amp; tennis on Kalshi</small></div>
+  <nav><a href="index.html">Dashboard</a><a class="on" href="pipeline.html">Pipeline</a></nav>
+  <div class="who">Jeddy Xie</div>
+</header>
+<main>
+  <h1>From hypothesis to trading system</h1>
+  <p class="sub">Every idea runs the loop. Only a pass leaves it. All figures on this page are real <span class="tag real">REAL · <span class="asof"></span></span></p>
+
+  <section class="panel loop" style="margin-bottom:14px"><svg id="loop" viewBox="0 0 1180 420"></svg></section>
+
+  <div class="grid two">
+    <section class="panel"><h2>Where each system stands <span class="tag real">REAL</span></h2>
+      <table class="steps"><thead><tr><th>#</th><th>Step</th><th>Courtside NBA</th><th>Markov Tennis</th></tr></thead><tbody id="steps"></tbody></table></section>
+    <section class="panel"><h2>The bar rises with every idea tried <span class="tag real">REAL</span></h2>
+      <div id="hurdle"></div>
+      <div class="s" style="color:var(--muted);font-size:12px;margin-top:6px">Hurdle = max(3.4, expected max z of N trials + 1.645)</div></section>
+  </div>
+
+  <div class="grid tiles four" id="controls"></div>
+  <div class="grid tiles three" id="data"></div>
+
+  <footer><span>Figures: private Courtside repo, status as of <span class="asof"></span>. Repository private under Kalshi Developer Agreement §3.1.</span>
+    <a href="https://jeddy-xie.github.io/forecasting-the-future/">Also: Forecasting the Future</a></footer>
+</main>
+<script src="assets/facts.js"></script>
+<script src="assets/charts.js"></script>
+<script>
+const F = FACTS, N = F.nba, T = F.tennis;
+document.querySelectorAll(".asof").forEach((e) => (e.textContent = F.asOf));
+
+// ---- loop diagram
+const svg = document.getElementById("loop"), W = 200, H = 84;
+const zone = (x, y, w, h, label) => { el("rect", { class: "zone", x, y, width: w, height: h, rx: 6 }, svg);
+  el("text", { class: "zlab", x: x + w - 12, y: y + 18, "text-anchor": "end" }, svg).textContent = label; };
+zone(8, 8, 1164, 250, "RESEARCH LOOP");
+zone(8, 290, 1164, 122, "PROMOTION · ONE STEP AT A TIME");
+const node = (x, y, t, d, c, opt = {}) => {
+  const g = el("g", { class: "node" + (opt.gate ? " gate" : "") }, svg), w = opt.w || W;
+  el("rect", { x, y, width: w, height: H, rx: 6 }, g);
+  el("text", { class: "t", x: x + 12, y: y + 24 }, g).textContent = t;
+  el("text", { class: "d", x: x + 12, y: y + 44 }, g).textContent = d;
+  const ct = el("text", { class: "c", x: x + 12, y: y + 66, fill: opt.cc || "var(--ink)" }, g); ct.textContent = c;
+  return { x, y, w, cx: x + w / 2, cy: y + H / 2, r: x + w, b: y + H };
+};
+el("defs", {}, svg).innerHTML = ["n", "g", "b"].map((k, i) => `<marker id="a${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+  <path d="M0 0L10 5L0 10z" fill="${["var(--neutral)", "var(--good)", "var(--bad)"][i]}"/></marker>`).join("");
+const edge = (d, cls = "", m = "n") => el("path", { d, class: "edge " + cls, "marker-end": `url(#a${m})` }, svg);
+
+const idea = node(28, 34, "Idea", "from research and loop memory", "new batch each cycle");
+const seal = node(320, 34, "Seal", "rule and pass mark hashed first", `NBA ${N.registered + N.loopTested} · Tennis ${T.rules + T.settings}`);
+const back = node(612, 34, "Backtest", "explore set only, fees and fills", `${N.explore} games · ${N.holdout} held out`);
+const ctrl = node(904, 34, "Honesty controls", "look-ahead · fills · null · plant", `0 of ${N.lookaheadDecisions.toLocaleString()} changed`, { w: 248 });
+const hurd = node(904, 158, "Hurdle", "multiple-testing t-stat", `NBA 0/${N.registered + N.loopTested} · Tennis 0/${T.rules + T.settings}`, { gate: true, w: 248, cc: "var(--bad)" });
+const mem = node(466, 158, "Memory", "result and reason logged", "every trial raises the bar");
+edge(`M${idea.r} ${idea.cy}H${seal.x - 4}`); edge(`M${seal.r} ${seal.cy}H${back.x - 4}`); edge(`M${back.r} ${back.cy}H${ctrl.x - 4}`);
+edge(`M${ctrl.cx} ${ctrl.b}V${hurd.y - 4}`);
+edge(`M${hurd.x} ${hurd.cy}H${mem.r + 4}`, "fail", "b");
+el("text", { class: "elab", x: hurd.x - 34, y: hurd.cy - 8, fill: "var(--bad)" }, svg).textContent = "fail";
+edge(`M${mem.x} ${mem.cy}H${idea.cx}V${idea.b + 4}`, "", "n");
+
+const P = [
+  ["Final exam", "held-out data, read once", `${N.holdout} NBA games sealed`],
+  ["Paper", "live, no orders (tennis)", `${T.paperMatches} matches · ${T.paperTrades} trades`],
+  ["Demo money", "Kalshi practice exchange", "order path drilled"],
+  ["Sandbox", "real limits: certify or reject", "1 rule rejected"],
+  ["Sign-off", "owner signs the build", "0 signed"],
+  ["Live, small", `${F.limits.contractsPerOrder} contracts · $${F.limits.dailyLossCap}/day cap`, "$0 at risk"],
+  ["Scale", "after 200+ real matches", "—"],
+];
+const pw = 152, pg = 8, px0 = 22;
+const pn = P.map(([t, d, c], i) => node(px0 + i * (pw + pg), 316, t, d, c, { w: pw }));
+pn.slice(1).forEach((n, i) => edge(`M${pn[i].r} ${n.cy}H${n.x - 3}`));
+edge(`M${hurd.cx} ${hurd.b}V274H${pn[0].cx}V${pn[0].y - 4}`, "pass", "g");
+el("text", { class: "elab", x: hurd.cx + 8, y: hurd.b + 20, fill: "var(--good)" }, svg).textContent = "pass";
+
+// ---- steps
+const chip = { done: '<span class="chip done">✓ Done</span>', prog: '<span class="chip prog">◐ In progress</span>',
+  block: '<span class="chip block">■ Blocked</span>', none: '<span class="chip none">○ Not started</span>' };
+document.getElementById("steps").innerHTML = F.steps.map(([s, a, b], i) =>
+  `<tr><td class="num">${i + 1}</td><td class="step">${s}</td><td>${chip[a]}</td><td>${chip[b]}</td></tr>`).join("");
+
+// ---- hurdle curve
+lineChart(document.getElementById("hurdle"), [{ key: "h", label: "hurdle", color: css("--neutral"), points: F.hurdleCurve }], {
+  zeroBase: false, yMin: 3.2, yMax: 4.7, yFmt: (v) => v.toFixed(1), xFmt: (v) => v, tipX: (v) => `${v} trials`, endLabels: false,
+  xTicks: [0, 100, 200, 300, 400], size: { w: 520, h: 250, r: 24, l: 40 },
+  markers: [
+    { x: N.trials, y: N.hurdle, color: css("--nba"), label: `NBA 48: ${N.hurdle} @ ${N.trials}`, dx: 10, dy: 20 },
+    { x: N.loopTrials, y: N.loopHurdle, color: css("--nba"), label: `NBA loop: ${N.loopHurdle}`, dx: -10, dy: -10, anchor: "end" },
+    { x: T.trials, y: T.hurdle, color: css("--tennis"), label: `Tennis: ${T.hurdle} @ ${T.trials}`, dx: 10, dy: 18 },
+  ] });
+
+// ---- tiles
+const tile = (k, v, s) => `<div class="panel tile"><div class="k">${k}<span class="tag real">REAL</span></div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+document.getElementById("controls").innerHTML = [
+  tile("Look-ahead test", `0 / ${N.lookaheadDecisions.toLocaleString()}`, "decisions changed by a fake future"),
+  tile("Fills audit", `${N.fillErrors} errors`, `${N.fillsAudited.toLocaleString()} simulated fills re-priced`),
+  tile("False positives", `${T.nullPassed} / ${T.nullCopies}`, "no-edge copies that passed"),
+  tile("Risk gate", `${F.gateRules} rules`, "checked before every order"),
+].join("");
+document.getElementById("data").innerHTML = [
+  tile("NBA games", N.games.toLocaleString(), `${N.plays.toLocaleString()} plays`),
+  tile("Kalshi price history", "~" + N.priceGames.toLocaleString(), "NBA games, minute by minute"),
+  tile("Tennis matches", T.pbpMatches.toLocaleString(), `point by point · ${T.pricedMatches.toLocaleString()} with prices`),
+].join("");
+</script>
+</body>
+</html>

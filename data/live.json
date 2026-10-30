@@ -1,0 +1,10 @@
+{
+ "schema": 1,
+ "mode": "mock",
+ "facts": {
+  "realMoney": "Locked",
+  "gateRules": 22
+ },
+ "trades": [],
+ "generated_utc": "2026-10-30T00:10:18+00:00"
+}
