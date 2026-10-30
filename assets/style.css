@@ -6,8 +6,8 @@
   --nba: #2a6fc9; --tennis: #cf5a24; --neutral: #8a8f98;
   --good: #1f7a4d; --bad: #c03a33; --warn: #9a6700;
   --mock-bg: #fff6e0; --mock-ink: #6b4a00; --mock-rule: #e9cf8a;
-  --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "Libre Franklin", "Franklin Gothic Book", "Helvetica Neue", Arial, sans-serif;            /* labels, navigation */
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;  /* headings and every number: default digits are tabular and lining */
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -21,23 +21,23 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); }
 a { color: inherit; }
-.num, td.n, .tile .v { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.num, td.n, .tile .v { font-family: var(--serif); font-variant-numeric: tabular-nums lining-nums; }
 
 header.top { display: flex; align-items: center; gap: 28px; padding: 14px 32px; border-bottom: 1px solid var(--rule); background: var(--panel); }
-.brand { font-weight: 600; font-size: 17px; letter-spacing: .2px; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 17px; letter-spacing: .2px; }
 .brand small { font-weight: 400; color: var(--muted); margin-left: 8px; font-size: 13px; }
 nav a { text-decoration: none; color: var(--muted); padding: 6px 2px; margin-right: 18px; border-bottom: 2px solid transparent; }
 nav a.on { color: var(--ink); border-color: var(--ink); }
 header.top .who { margin-left: auto; color: var(--muted); font-size: 13px; }
 
 main { max-width: 1240px; margin: 0 auto; padding: 22px 32px 40px; }
-h1 { font-size: 22px; margin: 4px 0 2px; font-weight: 600; }
+h1 { font-family: var(--serif); font-size: 24px; margin: 4px 0 2px; font-weight: 600; }
 .sub { color: var(--muted); margin: 0 0 18px; }
 
 .mock-banner { display: flex; gap: 12px; align-items: baseline; background: var(--mock-bg); color: var(--mock-ink);
   border: 1px solid var(--mock-rule); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; font-size: 13px; }
-.mock-banner b { font-family: var(--mono); letter-spacing: 1px; }
-.tag { display: inline-block; font: 600 10.5px/1 var(--mono); letter-spacing: .8px; padding: 4px 6px; border-radius: 4px; vertical-align: 2px; }
+.mock-banner b { font-family: var(--sans); font-weight: 700; letter-spacing: 1px; }
+.tag { display: inline-block; font: 600 10.5px/1 var(--sans); letter-spacing: .8px; padding: 4px 6px; border-radius: 4px; vertical-align: 2px; }
 .tag.mock { background: var(--mock-bg); color: var(--mock-ink); border: 1px solid var(--mock-rule); }
 .tag.real { background: var(--faint); color: var(--muted); border: 1px solid var(--rule); }
 
@@ -62,12 +62,12 @@ h1 { font-size: 22px; margin: 4px 0 2px; font-weight: 600; }
 .chart { position: relative; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
 .chart .grid line { stroke: var(--rule); stroke-width: 1; }
-.chart .axis text, .chart .lab { fill: var(--muted); font: 11px var(--mono); }
+.chart .axis text, .chart .lab { fill: var(--muted); font: 11.5px var(--serif); }
 .chart .zero { stroke: var(--neutral); stroke-width: 1; }
-.chart .water { fill: var(--muted); opacity: .09; font: 700 54px var(--mono); letter-spacing: 6px; }
+.chart .water { fill: var(--muted); opacity: .09; font: 700 54px var(--sans); letter-spacing: 6px; }
 .chart .xhair { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
 .tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
-  padding: 7px 9px; font: 12px var(--mono); box-shadow: 0 2px 10px rgba(0,0,0,.08); white-space: nowrap; display: none; z-index: 2; }
+  padding: 7px 9px; font: 12.5px var(--serif); box-shadow: 0 2px 10px rgba(0,0,0,.08); white-space: nowrap; display: none; z-index: 2; }
 .tip .t { color: var(--muted); margin-bottom: 3px; }
 details.tv { margin-top: 8px; font-size: 12px; color: var(--muted); }
 details.tv summary { cursor: pointer; }
@@ -93,13 +93,13 @@ td.n, th.n { text-align: right; }
 .loop .node.gate rect { stroke: var(--ink); stroke-width: 2; }
 .loop .node text.t { fill: var(--ink); font: 600 13px var(--sans); }
 .loop .node text.d { fill: var(--muted); font: 11px var(--sans); }
-.loop .node text.c { font: 600 11px var(--mono); }
+.loop .node text.c { font: 600 12px var(--serif); }
 .loop .edge { stroke: var(--neutral); stroke-width: 1.5; fill: none; }
 .loop .edge.fail { stroke: var(--bad); stroke-dasharray: 5 4; }
 .loop .edge.pass { stroke: var(--good); }
 .loop .elab { font: 600 11px var(--sans); }
 .loop .zone { fill: var(--faint); }
-.loop .zlab { fill: var(--muted); font: 600 11px var(--mono); letter-spacing: 1px; }
+.loop .zlab { fill: var(--muted); font: 600 11px var(--sans); letter-spacing: 1px; }
 .steps td { vertical-align: middle; }
 .steps td.step { white-space: nowrap; font-weight: 500; }
 .steps td.note { color: var(--muted); font-size: 12px; }
