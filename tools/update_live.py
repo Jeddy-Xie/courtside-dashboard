@@ -25,13 +25,15 @@ LEDGERS = {"nba": "data/ledger.db", "tennis": "data/tennis/ledger-prod.db"}
 
 
 def gate_rule_count(kalshi: Path) -> int | None:
-    """len(RULES) from courtside/risk/gate.py, read with ast so nothing is imported or run."""
-    try:
-        for node in ast.parse((kalshi / "courtside/risk/gate.py").read_text()).body:
-            if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "RULES" for t in node.targets):
-                return len(ast.literal_eval(node.value))
-    except (OSError, SyntaxError, ValueError):
-        pass
+    """len(RULES) from the risk gate, read with ast so nothing is imported or run. The gate moved from courtside/risk/
+    to include/risk/ in the 2026-10-29 repo split; both paths are tried, newest first."""
+    for rel in ("include/risk/gate.py", "courtside/risk/gate.py"):
+        try:
+            for node in ast.parse((kalshi / rel).read_text()).body:
+                if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "RULES" for t in node.targets):
+                    return len(ast.literal_eval(node.value))
+        except (OSError, SyntaxError, ValueError):
+            continue
     return None
 
 
